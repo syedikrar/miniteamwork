@@ -72,4 +72,39 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
      }
+
+     public function testUserWithNullToken()
+    {
+        $user = User::create([
+          'first_name' => 'John',
+          'last_name' => 'lee',
+          'email' => 'ikrar@gmail.com',
+          'password' => '12345678',
+          'password_confirmation' => '12345678',
+        ]);
+        $token = $user->createToken('API Token')->plainTextToken;
+        $headers = ['Accept' => 'application/json'];
+
+        $this->json('get', '/api/task/get/all', [], $headers)->assertStatus(401);
+    }
+
+    public function testUserIsLoggedOutProperly()
+    {
+        $user = User::create([
+          'first_name' => 'John',
+          'last_name' => 'lee',
+          'email' => 'ikrar@gmail.com',
+          'password' => '12345678',
+          'password_confirmation' => '12345678',
+        ]);
+        $token = $user->createToken('API Token')->plainTextToken;
+        $headers = ['Authorization' => "Bearer $token"];
+
+        $this->json('get', '/api/task/get/all', [], $headers)->assertStatus(200);
+        $this->json('post', '/api/auth/logout', [], $headers)->assertStatus(200);
+
+        $user = User::find($user->id);
+
+        $this->assertEquals(null, $user->api_token);
+    }
 }

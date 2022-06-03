@@ -13,6 +13,7 @@ class UserService
 
     public function deleteUser($id)
     {
+      // dd($id);
       return User::find($id)->delete();
     }
 }

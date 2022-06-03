@@ -14,7 +14,7 @@ class TaskService
         'completed_flag' => $request->completed_flag
       ]);
 
-      // $task->users()->attach($task->id);
+      $task->users()->attach($task->id);
       return $task;
     }
 

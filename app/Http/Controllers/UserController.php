@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
-
 class UserController extends Controller
 {
+
     public function getUsers()
     {
       $users = (new UserService())->getUsers();
@@ -17,10 +17,33 @@ class UserController extends Controller
       return response()->json($response);
     }
     /**
+     * @OA\Get(
+     *      path="/api/auth/getUsers",
+     *      operationId="get users",
+     *      tags={"getUsers"},
+     *      summary="Get all users",
+     *      description="Returns all Users",
+     *      security={ {"sanctum": {} }},
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successful operation",
+     *       ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthenticated",
+     *      ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     *     )
+     */
+
+    /**
      * @OA\Delete(
      *      path="/api/user/delete/{id}",
      *      operationId="deleteUser",
-     *      tags={"user"},
+     *      tags={"delete user"},
      *      summary="Delete existing user",
      *      description="Deletes a record and returns no content",
      *      @OA\Parameter(

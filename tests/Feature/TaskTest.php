@@ -45,4 +45,58 @@ class TaskTest extends TestCase
                "message"
             ]);
     }
+
+    public function testEditTask()
+    {
+      $user = User::factory()->create();
+      $token = $user->createToken('API Token')->plainTextToken;
+      $headers = ['Authorization' => "Bearer $token"];
+
+      $task = Task::factory()->create();
+
+      $payload = [
+          'name' => 'Lorem',
+          'description' => 'Ipsum',
+          'completed_flag' => 'inprogress',
+      ];
+
+      $this->json('PUT', '/api/task/update/'.$task->id, $payload, $headers)
+          ->assertStatus(200)
+          ->assertJsonStructure([
+            "details",
+             "message"
+          ]);
+    }
+
+    public function testGetAllTasks()
+    {
+        $user = User::factory()->create();
+
+        $token = $user->createToken('API Token')->plainTextToken;
+        $headers = ['Accept' => 'application/json', 'Authorization' => "Bearer $token"];
+        $payload = [];
+        $this->json('GET', '/api/task/get/all', $payload, $headers)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+              "task" => [],
+            ]);
+
+            $this->assertAuthenticated();
+    }
+
+    public function testDeleteTask()
+    {
+      $user = User::factory()->create();
+
+      $token = $user->createToken('API Token')->plainTextToken;
+      $headers = ['Accept' => 'application/json', 'Authorization' => "Bearer $token"];
+      $task = Task::factory()->create();
+      $payload = [];
+      $this->json('DELETE', '/api/task/delete/'.$task->id, $payload, $headers)
+          ->assertStatus(200)
+          ->assertJsonStructure([
+            "details",
+             "message"
+          ]);
+    }
 }
